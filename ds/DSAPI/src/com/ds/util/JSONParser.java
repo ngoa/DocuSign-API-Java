@@ -8,6 +8,7 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -15,6 +16,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.ds.beans.EnvelopeTemplate;
 import com.ds.data.Data;
 
 /**
@@ -66,9 +68,8 @@ public class JSONParser {
 		HttpsURLConnection uc = (HttpsURLConnection) u.openConnection();
 		uc.setRequestMethod(requestMethod);
 		String authentication = "<DocuSignCredentials><Username>"
-				+ Data.USERNAME + "</Username><Password>"
-				+ Data.PASSWORD + "</Password><IntegratorKey>"
-				+ Data.INTEGRATOR_KEY
+				+ Data.USERNAME + "</Username><Password>" + Data.PASSWORD
+				+ "</Password><IntegratorKey>" + Data.INTEGRATOR_KEY
 				+ "</IntegratorKey></DocuSignCredentials>";
 		uc.setRequestProperty("X-DocuSign-Authentication", authentication);
 		uc.setRequestProperty("Content-type", "application/json");
@@ -92,13 +93,42 @@ public class JSONParser {
 		}
 	}
 
-	public static void parseLogin(JSONObject jsonObject) throws JSONException {
+	public static void parseLoginInfo(JSONObject jsonObject) throws JSONException {
 		JSONArray jsonArray = jsonObject.getJSONArray("loginAccounts");
 		if (jsonArray.length() > 0) {
-			JSONObject jlogin = (JSONObject) jsonArray.get(0);
+			JSONObject jlogin = jsonArray.getJSONObject(0);
 			Data.BASE_URL = jlogin.getString("baseUrl");
 			Data.ACCOUNT_ID = jlogin.getString("accountId");
 		}
+	}
+
+	public static ArrayList<EnvelopeTemplate> parseEnvelopeTemplatesList(
+			JSONObject jsonObject) throws JSONException {
+		ArrayList<EnvelopeTemplate> envelopeTemplatesList = new ArrayList<EnvelopeTemplate>();
+		JSONArray jenvelopeTemplatesList = jsonObject
+				.getJSONArray("envelopeTemplates");
+		for (int i = 0; i < jenvelopeTemplatesList.length(); i++) {
+			JSONObject jenvelopeTemplate = jenvelopeTemplatesList
+					.getJSONObject(i);
+			EnvelopeTemplate tempEnvelopeTemplate = parseEnvelopeTemplate(jenvelopeTemplate);
+			if (tempEnvelopeTemplate != null)
+				envelopeTemplatesList.add(tempEnvelopeTemplate);
+		}
+		return envelopeTemplatesList;
+	}
+
+	public static EnvelopeTemplate parseEnvelopeTemplate(JSONObject jsonObject)
+			throws JSONException {
+		EnvelopeTemplate envelopeTemplate = new EnvelopeTemplate();
+		envelopeTemplate.setDescription(jsonObject.getString("description"));
+		envelopeTemplate.setLastModified(jsonObject.getString("lastModified"));
+		envelopeTemplate.setName(jsonObject.getString("name"));
+		envelopeTemplate.setPageCount(jsonObject.getInt("pageCount"));
+		envelopeTemplate.setPassword(jsonObject.getString("password"));
+		envelopeTemplate.setShared(jsonObject.getBoolean("shared"));
+		envelopeTemplate.setTemplateId(jsonObject.getString("templateId"));
+		envelopeTemplate.setUri(jsonObject.getString("uri"));
+		return envelopeTemplate;
 	}
 
 }
