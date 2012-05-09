@@ -12,5 +12,4 @@ public class LoginTest {
 		System.out.println(LoginInfo.PASSWORD);
 		System.out.println(LoginInfo.ACCOUNT_ID);
 	}
-
 }
