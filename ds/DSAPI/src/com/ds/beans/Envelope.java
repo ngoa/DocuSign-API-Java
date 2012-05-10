@@ -11,8 +11,8 @@ public class Envelope {
 	private ArrayList<Document> documentsList;
 	private String emailBlurb;
 	private String emailSubject;
-	private String enableWetSign;
-	private String enforceSignerVisibility;
+	private boolean enableWetSign;
+	private boolean enforceSignerVisibility;
 	private String eventNotification;
 	private Notification notification;
 	private Recipients recipients;
@@ -74,19 +74,19 @@ public class Envelope {
 		this.emailSubject = emailSubject;
 	}
 
-	public String getEnableWetSign() {
+	public boolean isEnableWetSign() {
 		return enableWetSign;
 	}
 
-	public void setEnableWetSign(String enableWetSign) {
+	public void setEnableWetSign(boolean enableWetSign) {
 		this.enableWetSign = enableWetSign;
 	}
 
-	public String getEnforceSignerVisibility() {
+	public boolean isEnforceSignerVisibility() {
 		return enforceSignerVisibility;
 	}
 
-	public void setEnforceSignerVisibility(String enforceSignerVisibility) {
+	public void setEnforceSignerVisibility(boolean enforceSignerVisibility) {
 		this.enforceSignerVisibility = enforceSignerVisibility;
 	}
 

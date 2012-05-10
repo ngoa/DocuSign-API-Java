@@ -7,6 +7,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.ds.beans.Envelope;
+import com.ds.beans.EnvelopeDocument;
+import com.ds.beans.EnvelopeRecipientStatus;
 import com.ds.beans.EnvelopeTemplate;
 import com.ds.beans.Status;
 import com.ds.data.Data;
@@ -95,4 +97,45 @@ public class DSImpl implements DS {
 		return envelope;
 	}
 
+	@Override
+	public EnvelopeRecipientStatus getEnvelopeRecipientStatus(String envelopeId)
+			throws JSONException, IOException {
+		EnvelopeRecipientStatus envelopeRecipientStatus = new EnvelopeRecipientStatus();
+		String url = Data.BASE_URL + "/envelopes/" + envelopeId
+				+ "/recipients/status";
+		JSONObject jsonObject = new JSONObject(JSONParser.parseUrlConnection(
+				url, "GET", null));
+		envelopeRecipientStatus = JSONParser
+				.parseEnvelopeRecipientStatus(jsonObject);
+		return envelopeRecipientStatus;
+	}
+
+	@Override
+	public String getEnvelopeStatus(String envelopeId) throws JSONException,
+			IOException {
+		String url = Data.BASE_URL + "/envelopes/" + envelopeId + "/status";
+		JSONObject jsonObject = new JSONObject(JSONParser.parseUrlConnection(
+				url, "GET", null));
+		String envelopeStatus = JSONParser.parseEnvelopeStatus(jsonObject);
+		return envelopeStatus;
+	}
+
+	@Override
+	public ArrayList<EnvelopeDocument> getEnvelopeDocumentsList(
+			String envelopeId) throws JSONException, IOException {
+		String url = Data.BASE_URL + "/envelopes/" + envelopeId + "/documents";
+		JSONObject jsonObject = new JSONObject(JSONParser.parseUrlConnection(
+				url, "GET", null));
+		ArrayList<EnvelopeDocument> envelopeDocumentsList = JSONParser
+				.parseEnvelopeDocumentsList(jsonObject);
+		return envelopeDocumentsList;
+	}
+
+	@Override
+	public void downloadEnvelopeDocument(String envelopeId, String documentId,
+			String downloadPath) throws JSONException, IOException {
+		String url = Data.BASE_URL + "/envelopes/" + envelopeId + "/documents/"
+				+ documentId;
+		JSONParser.downloadPDF(url, downloadPath);
+	}
 }
