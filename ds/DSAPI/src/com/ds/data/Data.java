@@ -12,6 +12,8 @@ public class Data {
 	public static String ACCOUNT_ID = null;
 	public static String INTEGRATOR_KEY = null;
 	public static String BASE_URL = null;
+	public static boolean ERROR_FLAG = false;
+	public static String ERROR_MESSAGE = null;
 
 	public static void initialize() throws IOException {
 		File file = new File("resources\\data.txt");

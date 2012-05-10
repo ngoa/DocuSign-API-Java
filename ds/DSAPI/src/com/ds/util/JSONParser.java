@@ -16,7 +16,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.ds.beans.Envelope;
+import com.ds.beans.EnvelopeStatus;
 import com.ds.beans.EnvelopeTemplate;
+import com.ds.beans.Status;
 import com.ds.data.Data;
 
 /**
@@ -93,27 +96,46 @@ public class JSONParser {
 		}
 	}
 
-	public static void parseLoginInfo(JSONObject jsonObject) throws JSONException {
-		JSONArray jsonArray = jsonObject.getJSONArray("loginAccounts");
-		if (jsonArray.length() > 0) {
-			JSONObject jlogin = jsonArray.getJSONObject(0);
-			Data.BASE_URL = jlogin.getString("baseUrl");
-			Data.ACCOUNT_ID = jlogin.getString("accountId");
-		}
+	public static void parseLoginInfo(JSONObject jsonObject)
+			throws JSONException {
+		if (!jsonObject.has("errorCode")) {
+			JSONArray jsonArray = jsonObject.getJSONArray("loginAccounts");
+			if (jsonArray.length() > 0) {
+				JSONObject jlogin = jsonArray.getJSONObject(0);
+				Data.BASE_URL = jlogin.getString("baseUrl");
+				Data.ACCOUNT_ID = jlogin.getString("accountId");
+			}
+		} else
+			parseErrorCode(jsonObject);
+	}
+
+	private static void parseErrorCode(JSONObject jsonObject)
+			throws JSONException {
+
+		String errorCode = jsonObject.getString("errorCode");
+		String message = jsonObject.getString("message");
+		String errorString = "Error Code: " + errorCode + "\n" + "Message: "
+				+ message;
+		System.out.println(errorString);
+		Data.ERROR_FLAG = true;
+		Data.ERROR_MESSAGE = errorString;
 	}
 
 	public static ArrayList<EnvelopeTemplate> parseEnvelopeTemplatesList(
 			JSONObject jsonObject) throws JSONException {
 		ArrayList<EnvelopeTemplate> envelopeTemplatesList = new ArrayList<EnvelopeTemplate>();
-		JSONArray jenvelopeTemplatesList = jsonObject
-				.getJSONArray("envelopeTemplates");
-		for (int i = 0; i < jenvelopeTemplatesList.length(); i++) {
-			JSONObject jenvelopeTemplate = jenvelopeTemplatesList
-					.getJSONObject(i);
-			EnvelopeTemplate tempEnvelopeTemplate = parseEnvelopeTemplate(jenvelopeTemplate);
-			if (tempEnvelopeTemplate != null)
-				envelopeTemplatesList.add(tempEnvelopeTemplate);
-		}
+		if (!jsonObject.has("errorCode")) {
+			JSONArray jenvelopeTemplatesList = jsonObject
+					.getJSONArray("envelopeTemplates");
+			for (int i = 0; i < jenvelopeTemplatesList.length(); i++) {
+				JSONObject jenvelopeTemplate = jenvelopeTemplatesList
+						.getJSONObject(i);
+				EnvelopeTemplate tempEnvelopeTemplate = parseEnvelopeTemplate(jenvelopeTemplate);
+				if (tempEnvelopeTemplate != null)
+					envelopeTemplatesList.add(tempEnvelopeTemplate);
+			}
+		} else
+			parseErrorCode(jsonObject);
 		return envelopeTemplatesList;
 	}
 
@@ -129,6 +151,53 @@ public class JSONParser {
 		envelopeTemplate.setTemplateId(jsonObject.getString("templateId"));
 		envelopeTemplate.setUri(jsonObject.getString("uri"));
 		return envelopeTemplate;
+	}
+
+	public static Status parseStatus(JSONObject jsonObject)
+			throws JSONException {
+		Status status = new Status();
+		if (!jsonObject.has("errorCode")) {
+			if (jsonObject.has("envelopeStatusChanges"))
+				status.setEnvelopeStatusList(parseEnvelopeStatusesList(jsonObject));
+			if (jsonObject.has("resultSetSize"))
+				status.setResultSetSize(jsonObject.getInt("resultSetSize"));
+		} else
+			parseErrorCode(jsonObject);
+		return status;
+	}
+
+	public static ArrayList<EnvelopeStatus> parseEnvelopeStatusesList(
+			JSONObject jsonObject) throws JSONException {
+		ArrayList<EnvelopeStatus> envelopeStatusList = new ArrayList<EnvelopeStatus>();
+		JSONArray jenvelopeStatusesList = jsonObject
+				.getJSONArray("envelopeStatusChanges");
+		for (int i = 0; i < jenvelopeStatusesList.length(); i++) {
+			JSONObject jenvelopeStatus = jenvelopeStatusesList.getJSONObject(i);
+			EnvelopeStatus envelopeStatus = parseEnvelopeStatus(jenvelopeStatus);
+			if (envelopeStatus != null)
+				envelopeStatusList.add(envelopeStatus);
+		}
+		return envelopeStatusList;
+	}
+
+	public static EnvelopeStatus parseEnvelopeStatus(JSONObject jsonObject)
+			throws JSONException {
+		EnvelopeStatus envelopeStatus = new EnvelopeStatus();
+		envelopeStatus.setEnvelopeId(jsonObject.getString("envelopeId"));
+		envelopeStatus.setStatus(jsonObject.getString("status"));
+		envelopeStatus.setStatusChangedDateTime(jsonObject
+				.getString("statusChangedDateTime"));
+		envelopeStatus.setUri(jsonObject.getString("uri"));
+		return envelopeStatus;
+	}
+
+	public static Envelope parseEnvelope(JSONObject jsonObject) throws JSONException {
+		Envelope envelope = new Envelope();
+		if (!jsonObject.has("errorCode")) {
+			
+		} else
+			parseErrorCode(jsonObject);
+		return envelope;
 	}
 
 }

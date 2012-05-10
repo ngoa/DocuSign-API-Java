@@ -75,23 +75,4 @@ public class EnvelopeTemplate {
 		this.uri = uri;
 	}
 
-	@Override
-	public String toString() {
-		return "EnvelopeTemplate [\n "
-				+ (description != null ? "description=" + description + ",\n "
-						: "")
-				+ (lastModified != null ? "lastModified=" + lastModified
-						+ ",\n " : "")
-				+ (name != null ? "name=" + name + ",\n " : "")
-				+ "pageCount="
-				+ pageCount
-				+ ",\n "
-				+ (password != null ? "password=" + password + ",\n " : "")
-				+ "shared="
-				+ shared
-				+ ",\n "
-				+ (templateId != null ? "templateId=" + templateId + ",\n "
-						: "") + (uri != null ? "uri=" + uri : "") + "]\n";
-	}
-
 }
