@@ -1,10 +1,9 @@
 package com.ds.api;
 
-import java.io.IOException;
 
 public class DSFactory {
 
-	public DSImpl createDSImpl() throws IOException {
+	public DSImpl createDSImpl() {
 		return new DSImpl();
 	}
 

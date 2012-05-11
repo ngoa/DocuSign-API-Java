@@ -16,8 +16,8 @@ import com.ds.util.JSONParser;
 
 public class DSImpl implements DS {
 
-	public DSImpl() throws IOException {
-		Data.initialize();
+	public DSImpl(){
+//		Data.initialize();
 	}
 
 	@Override
