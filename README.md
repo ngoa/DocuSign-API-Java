@@ -1,4 +1,4 @@
-DocuSign Api for Java
+DocuSign API for Java
 =================
 
 Open source experimental projects. This is an open source project(not fully implemented). 
